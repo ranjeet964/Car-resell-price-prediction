@@ -18,62 +18,31 @@ transm_choices = ['Manual', 'Automatic']
 owner_type_choices = [1, 2, 3, 4]
 
 seats_choices = [2, 4, 5, 6, 7, 8, 9, 10]
-
 def convert_var(company, location, transm, fuel_type):
-	Company_Audi = 0
-	Company_BMW = 0
-	Company_Chevrolet = 0 
-	Company_Datsun = 0 
-	Company_Fiat = 0 
-	Company_Force = 0
-	Company_Ford = 0
-	Company_Honda = 0 
-	Company_Hyundai=0
-	Company_ISUZU=0
-	Company_Isuzu=0 
-	Company_Jaguar=0 
-	Company_Jeep=0 
-	Company_Land=0
-	Company_Mahindra=0
-	Company_Maruti=0
-	Company_Mercedes_Benz=0
-	Company_Mini=0
-	Company_Mitsubishi=0
-	Company_Nissan=0
-	Company_Porsche=0
-	Company_Renault=0
-	Company_Skoda=0
-	Company_Tata=0
-	Company_Toyota=0
-	Company_Volkswagen=0
-	Company_Volvo=0
-	Location_Bangalore=0
-	Location_Chennai=0
-	Location_Coimbatore=0
-	Location_Delhi=0
-	Location_Hyderabad=0
-	Location_Jaipur=0
-	Location_Kochi=0
-	Location_Kolkata=0
-	Location_Mumbai=0
-	Location_Pune=0
-	Transmission_Manual=0
-	Fuel_Type_Diesel=0
-	Fuel_Type_LPG=0
-	Fuel_Type_Petrol=0
-
-
-	comp = ('Company_'+company)
-	print(comp)
-	vars()[comp] = 1
-	loc = ('Location_'+location)
-	vars()[loc] = 1
-	fu = ('Fuel_Type_'+fuel_type)
-	vars()[fu] = 1
-	tran = ('Transmission_' + transm)
-	vars()[tran] = 1
-
-	return (Company_Audi ,Company_BMW , Company_Chevrolet, Company_Datsun, Company_Fiat, Company_Force, Company_Ford, Company_Honda, Company_Hyundai,Company_ISUZU, Company_Isuzu, Company_Jaguar,Company_Jeep,	Company_Land,Company_Mahindra,Company_Maruti,Company_Mercedes_Benz,Company_Mini,Company_Mitsubishi,Company_Nissan,Company_Porsche,Company_Renault,Company_Skoda,Company_Tata,Company_Toyota,Company_Volkswagen,	Company_Volvo,Location_Bangalore,Location_Chennai,Location_Coimbatore,Location_Delhi,Location_Hyderabad,Location_Jaipur,Location_Kochi,	Location_Kolkata,Location_Mumbai,Location_Pune,	Transmission_Manual,Fuel_Type_Diesel,Fuel_Type_LPG,	Fuel_Type_Petrol)
+    dict1= {'Company_Audi':0, 'Company_BMW':0,
+           'Company_Chevrolet':0, 'Company_Datsun':0, 'Company_Fiat':0, 'Company_Force':0,
+           'Company_Ford':0, 'Company_Honda':0, 'Company_Hyundai':0, 'Company_ISUZU':0,
+           'Company_Isuzu':0, 'Company_Jaguar':0, 'Company_Jeep':0, 'Company_Land':0,
+           'Company_Mahindra':0, 'Company_Maruti':0, 'Company_Mercedes-Benz':0,
+           'Company_Mini':0, 'Company_Mitsubishi':0, 'Company_Nissan':0,
+           'Company_Porsche':0, 'Company_Renault':0, 'Company_Skoda':0, 'Company_Tata':0,
+           'Company_Toyota':0, 'Company_Volkswagen':0, 'Company_Volvo':0,
+           'Location_Bangalore':0, 'Location_Chennai':0, 'Location_Coimbatore':0,
+           'Location_Delhi':0, 'Location_Hyderabad':0, 'Location_Jaipur':0,
+           'Location_Kochi':0, 'Location_Kolkata':0, 'Location_Mumbai':0,
+           'Location_Pune':0, 'Transmission_Manual':0, 'Fuel_Type_Diesel':0,
+           'Fuel_Type_LPG':0, 'Fuel_Type_Petrol':0}
+    
+    comp = "Company_"+company
+    loct = "Location_"+location
+    trans = "Transmission"+transm
+    fuel = "Fuel_Type_"+fuel_type
+    dict1[comp]=1
+    dict1[loct]=1
+    dict1[trans]=1
+    dict1[fuel]=1
+    
+    return list(dict1.values())
 
 
 class NewDataInput(Form):
