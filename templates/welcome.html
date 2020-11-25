@@ -1,0 +1,47 @@
+<style>
+    body {
+        background-position: fixed;
+        background-size: cover;
+        background-image: url({{ url_for('static', filename='5.jpg') }}) 
+    }
+
+    .topic {
+        background-color: white;
+        margin-top: 200px;
+        text-align: center;
+        font-size: 64px;
+        padding: 65px;
+        width: max-content;
+        margin-left: auto;
+        margin-right: auto;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        /* border: 1px solid black; */
+        border-radius: 5px;
+    }
+
+    .btn1{
+        margin: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        background-color: white;
+        padding: 25px;
+        width: max-content;
+    }
+
+</style>
+
+
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="topic">
+    CAR RESELL 
+    <br>
+    PRICE PREDICTION
+</div>
+<div class="btn1">
+    <a href="/model" class="btn btn-success" id=btn1>CALCULATE YOUR CAR PRICE</a>
+</div>
+{% endblock %}
