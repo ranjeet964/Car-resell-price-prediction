@@ -13,11 +13,12 @@
     background-image: url({{ url_for('static', filename='bg.jpg') }})
     }
     .header{
-        background-color: white;
+        background-color: rgb(46, 48, 63);
         width: 450px;
         padding: 20px;
         margin: 15px;
         opacity: 0.90;
+        color: white;
     }
 </style>
 
@@ -35,6 +36,9 @@
 <form method="POST" action="">
     <div class="form-group">
         {{render_field(form.company, class_="form-control form-control-sm")}}
+    </div>
+    <div class="form-group">
+        {{render_field(form.modelname, class_="form-control form-control-sm")}}
     </div>
     <div class="form-group">
         {{render_field(form.location, class_="form-control form-control-sm")}}
