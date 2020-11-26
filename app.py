@@ -1,9 +1,27 @@
+
 from flask import Flask, render_template, redirect,request
 from wtforms import SelectField, IntegerField, FloatField, StringField, Form
 import pickle
+import numpy as np
 
 app = Flask(__name__)
 
+
+# reading random forest randomized search cv ml model
+
+rf_rscv = pickle.load(open('rf_rscv.pkl','rb'))
+
+# tempm = pickle.load(open(filename,'rb'))
+
+# loading xgboost ml model
+
+xgboost_model = pickle.load(open('xgboost.pkl','rb'))
+
+# rf model 2 (without company name)
+
+rf_m2 = pickle.load(open('rf_model_2.pkl','rb'))
+
+##########################################################################
 
 company_choices = ['Maruti', 'Hyundai', 'Honda', 'Audi', 'Nissan', 'Toyota','Volkswagen', 'Land', 'Mitsubishi', 'Renault', 'Mercedes-Benz','BMW', 'Mahindra', 'Tata', 'Porsche', 'Ford', 'Jaguar', 'Volvo','Chevrolet', 'Skoda', 'Datsun', 'Mini', 'Fiat', 'Jeep','Ambassador', 'Isuzu', 'ISUZU', 'Force']
 
@@ -17,32 +35,40 @@ transm_choices = ['Manual', 'Automatic']
 
 owner_type_choices = [1, 2, 3, 4]
 
+
+
+def reset_dict():
+	dict1 = dict.fromkeys(dict1, 0)
+
 seats_choices = [2, 4, 5, 6, 7, 8, 9, 10]
 def convert_var(company, location, transm, fuel_type):
-    dict1= {'Company_Audi':0, 'Company_BMW':0,
-           'Company_Chevrolet':0, 'Company_Datsun':0, 'Company_Fiat':0, 'Company_Force':0,
-           'Company_Ford':0, 'Company_Honda':0, 'Company_Hyundai':0, 'Company_ISUZU':0,
-           'Company_Isuzu':0, 'Company_Jaguar':0, 'Company_Jeep':0, 'Company_Land':0,
-           'Company_Mahindra':0, 'Company_Maruti':0, 'Company_Mercedes-Benz':0,
-           'Company_Mini':0, 'Company_Mitsubishi':0, 'Company_Nissan':0,
-           'Company_Porsche':0, 'Company_Renault':0, 'Company_Skoda':0, 'Company_Tata':0,
-           'Company_Toyota':0, 'Company_Volkswagen':0, 'Company_Volvo':0,
-           'Location_Bangalore':0, 'Location_Chennai':0, 'Location_Coimbatore':0,
-           'Location_Delhi':0, 'Location_Hyderabad':0, 'Location_Jaipur':0,
-           'Location_Kochi':0, 'Location_Kolkata':0, 'Location_Mumbai':0,
-           'Location_Pune':0, 'Transmission_Manual':0, 'Fuel_Type_Diesel':0,
-           'Fuel_Type_LPG':0, 'Fuel_Type_Petrol':0}
-    
-    comp = "Company_"+company
-    loct = "Location_"+location
-    trans = "Transmission"+transm
-    fuel = "Fuel_Type_"+fuel_type
-    dict1[comp]=1
-    dict1[loct]=1
-    dict1[trans]=1
-    dict1[fuel]=1
-    
-    return list(dict1.values())
+	dict1= {'Company_Audi':0, 'Company_BMW':0,
+		'Company_Chevrolet':0, 'Company_Datsun':0, 'Company_Fiat':0, 'Company_Force':0,
+		'Company_Ford':0, 'Company_Honda':0, 'Company_Hyundai':0, 'Company_ISUZU':0,
+		'Company_Isuzu':0, 'Company_Jaguar':0, 'Company_Jeep':0, 'Company_Land':0,
+		'Company_Mahindra':0, 'Company_Maruti':0, 'Company_Mercedes-Benz':0,
+		'Company_Mini':0, 'Company_Mitsubishi':0, 'Company_Nissan':0,
+		'Company_Porsche':0, 'Company_Renault':0, 'Company_Skoda':0, 'Company_Tata':0,
+		'Company_Toyota':0, 'Company_Volkswagen':0, 'Company_Volvo':0,
+		'Location_Bangalore':0, 'Location_Chennai':0, 'Location_Coimbatore':0,
+		'Location_Delhi':0, 'Location_Hyderabad':0, 'Location_Jaipur':0,
+		'Location_Kochi':0, 'Location_Kolkata':0, 'Location_Mumbai':0,
+		'Location_Pune':0, 'Transmission_Manual':0, 'Fuel_Type_Diesel':0,
+		'Fuel_Type_LPG':0, 'Fuel_Type_Petrol':0}
+
+
+	comp = "Company_"+company
+	loct = "Location_"+location
+	trans = "Transmission_"+transm
+	fuel = "Fuel_Type_"+fuel_type
+	temp_list = [comp, loct, trans, fuel]
+
+	for i in temp_list:
+		if i in dict1:
+			dict1[i]=1
+
+	
+	return list(dict1.values())
 
 
 class NewDataInput(Form):
@@ -58,11 +84,6 @@ class NewDataInput(Form):
 	engine = FloatField('Engine (in CC)')
 	seats = SelectField('Seats', choices=seats_choices)
 
-
-
-# form_list = [company, location, year, fuel_type, transm, owner_type, kilo_driven, power, engine, seats]
-
-rfmodel = pickle.load(open('rfmodel.pkl','rb'))
 
 @app.route('/')
 def index():
@@ -81,17 +102,22 @@ def model():
 		owner_type = int(form.owner_type.data)
 		kilo_driven = form.kilo_driven.data
 		power = form.power.data
-		engine = form.power.data
+		engine = form.engine.data
 		mileage = form.mileage.data
 		seats = int(form.seats.data)
 
-		Company_Audi ,Company_BMW , Company_Chevrolet, Company_Datsun, Company_Fiat, Company_Force, Company_Ford, Company_Honda, Company_Hyundai,    Company_ISUZU, Company_Isuzu, Company_Jaguar,Company_Jeep,	Company_Land,Company_Mahindra,Company_Maruti,Company_Mercedes_Benz,Company_Mini,Company_Mitsubishi,Company_Nissan,Company_Porsche,Company_Renault,Company_Skoda,Company_Tata,Company_Toyota,Company_Volkswagen,	Company_Volvo,Location_Bangalore,Location_Chennai,Location_Coimbatore,Location_Delhi,Location_Hyderabad,Location_Jaipur,Location_Kochi,	Location_Kolkata,Location_Mumbai,Location_Pune,	Transmission_Manual,Fuel_Type_Diesel,Fuel_Type_LPG,	Fuel_Type_Petrol = convert_var(company, location, transm, fuel_type)
+		para_list = convert_var(company, location, transm, fuel_type)
+	
+		inputs = [year, kilo_driven, owner_type, power, mileage, engine, seats]
+		inputs = inputs + para_list
 
-		inputs = [[year, kilo_driven, owner_type, power, mileage, engine, seats, Company_Audi ,Company_BMW , Company_Chevrolet, Company_Datsun, Company_Fiat, Company_Force, Company_Ford, Company_Honda, Company_Hyundai,Company_ISUZU, Company_Isuzu, Company_Jaguar,Company_Jeep,Company_Land,Company_Mahindra,Company_Maruti,Company_Mercedes_Benz,Company_Mini,Company_Mitsubishi,Company_Nissan,Company_Porsche,Company_Renault,Company_Skoda,Company_Tata,Company_Toyota,Company_Volkswagen,Company_Volvo,Location_Bangalore,Location_Chennai,Location_Coimbatore,Location_Delhi,Location_Hyderabad,Location_Jaipur,Location_Kochi,	Location_Kolkata,Location_Mumbai,Location_Pune,	Transmission_Manual,Fuel_Type_Diesel,Fuel_Type_LPG,	Fuel_Type_Petrol]]
+		inputs = [inputs]
+		# xginp = np.array(inputs)
+		# xginp = xginp.reshape(48,1)
 
-		value = rfmodel.predict(inputs)
-		print(value)
-		return render_template('final.html', value = value)
+		# value_xg = xgboost_model.predict(inputs)[0]	
+		return render_template('final.html', value_rf=value_rf, value_xg=0)
+
 	return render_template('model.html', form=form)
 if __name__ == "__main__":
 	app.run(debug=True)
