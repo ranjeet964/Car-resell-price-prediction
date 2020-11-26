@@ -17,9 +17,6 @@ rf_rscv = pickle.load(open('rf_rscv.pkl','rb'))
 
 xgboost_model = pickle.load(open('xgboost.pkl','rb'))
 
-# rf model 2 (without company name)
-
-rf_m2 = pickle.load(open('rf_model_2.pkl','rb'))
 
 ##########################################################################
 
@@ -83,6 +80,7 @@ class NewDataInput(Form):
 	mileage = FloatField('Mileage')
 	engine = FloatField('Engine (in CC)')
 	seats = SelectField('Seats', choices=seats_choices)
+	modelname = StringField('Model Name')
 
 
 @app.route('/')
@@ -105,6 +103,7 @@ def model():
 		engine = form.engine.data
 		mileage = form.mileage.data
 		seats = int(form.seats.data)
+		modelname = form.modelname.data
 
 		para_list = convert_var(company, location, transm, fuel_type)
 	
@@ -115,8 +114,17 @@ def model():
 		# xginp = np.array(inputs)
 		# xginp = xginp.reshape(48,1)
 
+		dis_dict = {
+			'Company' : company,
+			'Model' : modelname,
+			'Location' : location,
+			'M. Year' : year
+		}
+
 		# value_xg = xgboost_model.predict(inputs)[0]	
-		return render_template('final.html', value_rf=value_rf, value_xg=0)
+		value_rf = rf_rscv.predict(inputs)[0]
+		value_rf = round(value_rf, 2)
+		return render_template('final.html', value_rf=value_rf,det=dis_dict)
 
 	return render_template('model.html', form=form)
 if __name__ == "__main__":
