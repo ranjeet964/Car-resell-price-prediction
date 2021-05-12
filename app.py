@@ -123,8 +123,10 @@ def model():
 
 		# value_xg = xgboost_model.predict(inputs)[0]	
 		value_rf = rf_rscv.predict(inputs)[0]
-		value_rf = round(value_rf, 2)
-		return render_template('final.html', value_rf=value_rf,det=dis_dict)
+		# value_rf = round(value_rf, 2)
+		value_max = value_rf * (1.025)
+		value_min = value_rf * (0.975)
+		return render_template('final.html', value_min=round(value_min, 2),value_max=round(value_max, 2) ,det=dis_dict)
 
 	return render_template('model.html', form=form)
 if __name__ == "__main__":
